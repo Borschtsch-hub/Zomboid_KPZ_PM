@@ -1,0 +1,7 @@
+x64/
+Zomboid/
+*.csv
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user

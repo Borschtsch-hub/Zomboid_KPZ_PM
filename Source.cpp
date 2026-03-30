@@ -1,11 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <stdint.h>
-#include <longstr.h>
-#include <unordered_map> 
+#include "Zomboid_CLI.h"
 
-const std::string Zomboid_Version = "Zomboid 0.2 (25.03.2026)";
+const std::string Zomboid_Version = "Zomboid 0.3 (30.03.2026)";
 
 enum eFlags {
 	eHelp,
@@ -20,7 +15,6 @@ enum eFlags {
 typedef std::unordered_map<std::string, eFlags> uMap;
 
 std::vector<std::string> Read_from_file(std::string inpfilename = "Data.csv", std::string page = "1");
-void Write_to_file();
 
 class Flag {//I dont know what to do with this:
 	uMap _flagmap = {
@@ -40,9 +34,6 @@ class Flag {//I dont know what to do with this:
 	std::vector<std::string> _temp;
 	eFlags _flagenum = eHelp;
 public:
-	bool check_file_flag(std::string _str){
-		return _str == "-f" || _str == "--file";
-	}
 	void push_argv(int argc, char* argv[]) {
 		for (int i = 1; i < argc; i++) {
 			_temp.push_back(argv[i]);
@@ -75,65 +66,41 @@ public:
 			break;
 		}
 	}
-	// Another function to apply flags for -f flag
+	
 	void out_temp() {
 		for (auto v : _temp)
 			std::cout << v;
 	}
 };
-// std::ifstream is to READ from files
+
 Flag flagobj;
 
 
-int main(int argc, char* argv[]) {
-	
-	std::vector<std::string> item = Read_from_file();
-	for(auto v: item)
-		std::cout << v << '\n';
+int main(int argc, char** argv) {
 
-	// If you wasn't in mood to write --help
+	// If you wasn't in the mood to write --help
 	if (argc == 1) {
 		std::cout <<LongString::_Help;
 		return 0;
 	}
+
 	flagobj.push_argv(argc, argv);
 
 	flagobj.apply_flags(argc);
-
+	
 	return 0;
 }
 
 std::vector<std::string> Read_from_file(std::string inpfilename, std::string page) {
 	std::vector<std::string> item;
-	std::string line = "";
-	std::cout <<'\n' << inpfilename << '\n';
+	//std::cout <<'\n' << inpfilename << '\n';
 	std::ifstream file(inpfilename);
 
 	if (!file.is_open()) {
 		std::cerr << "ERROR. Cannot open file";
 		return item;
 	}
-	while (std::getline(file, line)) {
-		item.push_back(line);
-	}
 
 	file.close();
 	return item;
-}
-
-void Write_to_file() {
-	std::string item;
-	std::ofstream file("DATA.csv");
-	while (true) {
-		std::cout << "Input: ";
-		std::cin >> item;
-		if (item == ",")
-			break;
-		if (item == ";") {
-			file << '\n';
-			continue;
-		}
-		file << item + ",";
-	}
-	file.close();
 }
