@@ -1,5 +1,8 @@
 x64/
 Zomboid/
+*.xml
+*.json
+*.exe
 *.csv
 *.sln
 *.vcxproj
